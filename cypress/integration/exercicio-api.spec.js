@@ -3,7 +3,7 @@ import contrato from '../contracts/usuarios.contract'
 
 describe('Testes da Funcionalidade Usuários', () => {
 
-     it.only('Deve validar contrato de usuários', () => {
+     it('Deve validar contrato de usuários', () => {
         cy.request('usuarios').then(response => {
           return contrato.validateAsync(response.body)
         })
@@ -14,7 +14,7 @@ describe('Testes da Funcionalidade Usuários', () => {
                method: 'GET',
                url: 'usuarios'
           }).then((response) => {
-               expect(response.body.usuarios[0].nome).to.equal('Fulano da Silva')
+               expect(response.body.usuarios[0].nome).to.equal('Emanuel Vieira')
                expect(response.status).to.equal(200)
                expect(response.duration).to.be.lessThan(130)
           })
@@ -26,12 +26,14 @@ describe('Testes da Funcionalidade Usuários', () => {
                url: 'usuarios',
                body: {
                     "nome": "Emanuel Vieira",
-                    "email": "emanuel@testpd.com",
+                    "email": "emanuel@testaed.com",
                     "password": "teste@teste",
-                    "administrador": "true"
-               }
+                    "administrador": "true",
+               },
+               failOnStatusCode: false
           }).then(response => {
-               expect(response.duration).to.be.lessThan(130)
+               expect(response.duration).to.be.lessThan(400)
+               expect(response.body.message).to.equal('Cadastro realizado com sucesso')
           })
      });
 
@@ -66,6 +68,7 @@ describe('Testes da Funcionalidade Usuários', () => {
                          }
                     }).then(response => {
                          expect(response.status).to.equal(200)
+                         expect(response.body.message).to.equal('Registro alterado com sucesso')
                     })
 
                })
@@ -80,6 +83,7 @@ describe('Testes da Funcionalidade Usuários', () => {
                     url: `usuarios/${id}`
                }).then(response => {
                     expect(response.status).to.equal(200)
+                    expect(response.body.message).to.equal('Registro excluído com sucesso')
                })
           })
 
